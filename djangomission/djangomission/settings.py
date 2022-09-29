@@ -88,6 +88,7 @@ WSGI_APPLICATION = 'djangomission.wsgi.application'
 
 DATABASES = DATABASES
 
+# Django User model setting
 AUTH_USER_MODEL = 'accounts.User'
 
 # Password validation
