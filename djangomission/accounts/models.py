@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
 from core.models import TimeStampModel
@@ -10,7 +10,6 @@ class UserManager(BaseUserManager):
             raise ValueError('EMAIL_IS_REQUIRED')
 
         user = self.model(
-            user_type=User.SOCIAL_LOGIN_CHOICES[0],
             email=email,
             username=username,
         )
@@ -30,7 +29,6 @@ class UserManager(BaseUserManager):
             raise ValueError('EMAIL_IS_REQUIRED')
 
         superuser = self.create_user(
-            user_type=User.SOCIAL_LOGIN_CHOICES[0],
             email=email,
             username=username,
             password=password,
@@ -46,7 +44,7 @@ class UserManager(BaseUserManager):
         return superuser
 
 
-class User(AbstractBaseUser, TimeStampModel):
+class User(AbstractBaseUser, PermissionsMixin, TimeStampModel):
     """
     기존에 설정되어 있언 AbstractUser는 
     id / password / last_login / is_superuser / username / first_name / last_name / email / is_staff / is_active / date_joined
@@ -78,7 +76,7 @@ class User(AbstractBaseUser, TimeStampModel):
 
     # UserManager.create_superuser 작동 시 email 입력을 위해 필요
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     objects = UserManager()
 
