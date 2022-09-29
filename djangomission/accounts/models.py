@@ -78,7 +78,7 @@ class User(AbstractBaseUser, TimeStampModel):
 
     # UserManager.create_superuser 작동 시 email 입력을 위해 필요
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = []
 
     objects = UserManager()
 
