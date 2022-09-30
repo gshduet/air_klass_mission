@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 from my_settings import SECRET_KEY
 
@@ -42,6 +42,7 @@ DEFAULT_APPS = [
 THIRD_PARTY_APPS = [
     'django_extensions',
     'rest_framework',
+    'rest_framework_simplejwt'
 ]
 
 LOCAL_APPS = [
@@ -133,3 +134,25 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# REMOVE_APPEND_SLASH_WARNING
+APPEND_SLASH = False
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
+}
+
+REST_USE_JWT = True
+
+SIMPLE_JWT = {
+    # ACCESS_TOKEN 유효기간
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),
+    # REFRESH_TOKEN 유효기간
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    # REFRESH_TOKEN 발급 시 ACCESS_TOKEN 동시 재발급 여부
+    'ROTATE_REFRESH_TOKENS': False,
+    # REFRESH_TOKEN 재발급 시 기존 REFRESH_TOKEN 블랙리스트 등록
+    'BLACKLIST_AFTER_ROTATION': True,
+    # 토큰 발급할 USER 모델 연결
+    'TOKEN_USER_CLASS': 'users.User',
+}

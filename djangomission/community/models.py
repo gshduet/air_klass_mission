@@ -22,8 +22,6 @@ class Question(TimeStampModel):
 
 
 class Answer(TimeStampModel):
-    klass = models.ForeignKey(
-        'contentshub.Klass', on_delete=models.CASCADE, verbose_name='질문이 올라온 강의')
     question = models.OneToOneField(
         'Question', on_delete=models.CASCADE, verbose_name='답변이 달릴 강의')
     contents = models.TextField(verbose_name='답변내용')
