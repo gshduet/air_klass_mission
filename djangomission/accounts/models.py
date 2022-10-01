@@ -84,4 +84,4 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampModel):
         db_table = 'user'
 
     def __str__(self):
-        return f'{self.email}-{self.username}'
+        return self.email

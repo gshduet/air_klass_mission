@@ -60,4 +60,4 @@ class SignInSerializer(serializers.ModelSerializer):
             refresh_token = str(token)
             access_token = str(token.access_token)
 
-            return {'refresh_token': refresh_token, 'access_token': access_token}
+            return {'sign_in_user':user, 'refresh_token': refresh_token, 'access_token': access_token}
