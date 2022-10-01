@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -33,7 +35,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         return new_user
 
 
-class SignInSerializer(serializers.ModelSerializer):
+class SignInSerializer(serializers.Serializer):
     """
     로그인을 위한 Serializer
     django_restframework_jwt는 19년 이후로 업데이트를 중단했기 때문에
@@ -54,10 +56,10 @@ class SignInSerializer(serializers.ModelSerializer):
 
         if not user:
             return serializers.ValidationError('INVALID_EMAIL_OR_PASSWORD')
-        
+
         else:
             token = RefreshToken.for_user(user)
             refresh_token = str(token)
             access_token = str(token.access_token)
 
-            return {'sign_in_user':user, 'refresh_token': refresh_token, 'access_token': access_token}
+            return {'user': user, 'refresh_token': refresh_token, 'access_token': access_token}

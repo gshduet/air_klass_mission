@@ -1,10 +1,14 @@
-from accounts.models import User
-from contentshub.models import Klass
 from rest_framework import serializers
 
-class KlassCreateSerializer(serializers.ModelSerializer):
-    master = serializers.ReadOnlyField(source='user.email')
+from .models import Master
+from accounts.models import User
+
+
+class SetMasterSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Klass
-        fields = ['master', 'title', 'description'] 
+        model = Master
+        fields = (
+            'master_name',
+            'description'
+        )

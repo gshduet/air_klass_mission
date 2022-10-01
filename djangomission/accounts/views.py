@@ -1,6 +1,3 @@
-import json
-
-from django.contrib.auth import login
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -45,34 +42,14 @@ class SignInView(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
-            login(request, serializer.validated_data['sign_in_user'])
-            response = Response({'MESSAGE': 'SIGN_IN_SUCCESS'}, status=status.HTTP_200_OK)
-            response.set_cookie('user', serializer.validated_data['sign_in_user'].id)
-            response.set_cookie('is_master', serializer.validated_data['sign_in_user'].is_master)
+            response = Response(
+                {
+                    'MESSAGE': 'SIGN_IN_SUCCESS',
+                    'user': serializer.validated_data['user'].email,
+                }, status=status.HTTP_200_OK)
+
+            response.set_cookie('user', serializer.validated_data['user'])
             response.set_cookie('access_token', serializer.validated_data['access_token'])
             response.set_cookie('refresh_token', serializer.validated_data['refresh_token'])
 
             return response
-
-    # def post(self, request):
-    #     data = json.loads(request.body)
-    #     email = data['email']
-    #     password = data['password']
-    #     user = authenticate(email=email, password=password)
-
-    #     if user:
-    #         token = TokenObtainPairSerializer.get_token(user)
-    #         refresh_token = str(token)
-    #         access_token = str(token.access_token)
-
-    #         return Response(
-    #             {
-    #                 'MESSAGE': 'SIGN_IN_SUCCESS',
-    #                 'ACCESS_TOKEN': access_token,
-    #                 'REFRESH_TOKEN': refresh_token
-    #             },
-    #             status=status.HTTP_200_OK
-    #         )
-
-    #     else:
-    #         return Response({'MESSAGE': 'INVALID_EMAIL_OR_PASSWORD'}, status=status.HTTP_400_BAD_REQUEST)
