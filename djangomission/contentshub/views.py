@@ -4,7 +4,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import Master, Klass
-from .serializers import SetMasterSerializer, KlassCreateSerializer, KlassRetriveSerializer
+from .serializers import SetMasterSerializer, KlassCreateSerializer, KlassDetailSerializer
 from accounts.models import User
 
 
@@ -65,7 +65,7 @@ class KlassView(APIView):
 
     def get(self, reqeust: Request) -> Response:
         klass = Klass.objects.all()
-        serializer = KlassRetriveSerializer(klass, many=True)
+        serializer = KlassDetailSerializer(klass, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -75,7 +75,7 @@ class KlassDetailView(APIView):
     def get(self, request: Request, id: int) -> Response:
         try:
             klass = Klass.objects.get(id=id)
-            serializer = KlassRetriveSerializer(klass)
+            serializer = KlassDetailSerializer(klass)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -83,8 +83,14 @@ class KlassDetailView(APIView):
             return Response({'MESSAGE': 'KLASS_DOES_NOT_EXISTS'}, status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request: Request, id: int) -> Response:
+        user = User.objects.get(email=request.COOKIES['user'])
+
         klass = Klass.objects.get(id=id)
-        serializer = KlassRetriveSerializer(
+
+        if user != klass.master:
+            return Response({'MESSAGE': 'UNAUTHORIZED_USER'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = KlassDetailSerializer(
             klass, data=request.data, partial=True)
 
         if serializer.is_valid():
@@ -92,4 +98,3 @@ class KlassDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
