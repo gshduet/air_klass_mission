@@ -113,12 +113,6 @@ class QuestionDetailView(APIView):
         question = Question.objects.select_related('klass__master').get(id=question_id)
         user = User.objects.get(email=request.COOKIES['user'])
 
-        print(question.klass.master)
-        print(user.master)
-
-        if user != question.student:
-            return Response({'MESSAGE': 'UNAUTHORIZED_USER'}, status=status.HTTP_403_FORBIDDEN)
-
         if question.klass.master == user.master or question.student == user:
             try:
                 if question.is_answered == False:
@@ -133,5 +127,7 @@ class QuestionDetailView(APIView):
     
             except Question.DoesNotExist:
                 return Response({'MESSAGE': 'QUESTION_DOES_NOT_EXISTS'}, status=status.HTTP_404_NOT_FOUND)
-    
+
+        else:
+            return Response({'MESSAGE': 'UNAUTHORIZED_USER'}, status=status.HTTP_403_FORBIDDEN)
 
