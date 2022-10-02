@@ -1,6 +1,5 @@
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework import generics
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -44,19 +43,24 @@ class SetMasterView(APIView):
         return Response({'MESSAGE': 'UNSET_MASTER_SUCCESS'}, status=status.HTTP_204_NO_CONTENT)
 
 
-class KlassCreateView(generics.CreateAPIView):
+class KlassCreateView(APIView):
     queryset = Klass.objects.all()
     serializer_class = KlassCreateSerializer
-    # permission_classes = [IsMasterUser]
 
     def post(self, request):
         serializer = KlassCreateSerializer(data=request.data)
+        user = User.objects.get(email=request.COOKIES['user'])
+
+        if not user.is_master:
+            return Response({'MESSAGE': 'UNAUTHORIZED_USER'}, status=status.HTTP_401_UNAUTHORIZED)
+
         if serializer.is_valid():
             Klass.objects.create(
-                master = request.user.master,
-                title = request.data['title'],
-                description = request.data['description'],
+                master=user.master,
+                title=request.data['title'],
+                description=request.data['description'],
             )
-        
+
             return Response({'MESSAGE': 'SUCCESS'}, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

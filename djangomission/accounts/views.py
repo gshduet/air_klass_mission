@@ -33,7 +33,6 @@ class SignInView(APIView):
             response = Response(
                 {
                     'MESSAGE': 'SIGN_IN_SUCCESS',
-                    'user': serializer.validated_data['user'].email,
                 }, status=status.HTTP_200_OK)
 
             response.set_cookie('user', serializer.validated_data['user'])
@@ -41,3 +40,6 @@ class SignInView(APIView):
             response.set_cookie('refresh_token', serializer.validated_data['refresh_token'])
 
             return response
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        

@@ -45,7 +45,7 @@ class SignInSerializer(serializers.Serializer):
         user = authenticate(email=email, password=password)
 
         if not user:
-            return serializers.ValidationError('INVALID_EMAIL_OR_PASSWORD')
+            raise serializers.ValidationError('INVALID_EMAIL_OR_PASSWORD')
 
         else:
             token = RefreshToken.for_user(user)
