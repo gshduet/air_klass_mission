@@ -4,6 +4,6 @@ from .views import MasterView, KlassView, KlassDetailView
 
 urlpatterns = [
     path('/setmaster', MasterView.as_view()),
-    path('/klass', KlassView.as_view()),
-    path('/klass/<int:id>', KlassDetailView.as_view())
+    path('', KlassView.as_view()),
+    path('/<int:klass_id>', KlassDetailView.as_view())
 ]

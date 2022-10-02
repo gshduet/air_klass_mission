@@ -1,19 +1,21 @@
-from django.contrib.auth import login, logout
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .serializers import SignUpSerializer, SignInSerializer
-from .models import User
+from accounts.serializers import SignUpSerializer, SignInSerializer
 
 
 class SignUpView(APIView):
+
     permissions_classes = [AllowAny]
     serializer_class = SignUpSerializer
 
     def post(self, request: Request) -> Response:
+        """
+        회원가입 API
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
@@ -25,10 +27,16 @@ class SignUpView(APIView):
 
 
 class SignInView(APIView):
+
     permissions_classes = [AllowAny]
     serializer_class = SignInSerializer
 
     def post(self, request: Request) -> Response:
+        """
+        로그인 API
+        로그인 성공 시 refresh_token, access_token, user_id 정보를 
+        Reponse에 담아 클라이언트에게 반환
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
@@ -48,6 +56,10 @@ class SignInView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request: Request) -> Response:
+        """
+        로그아웃 API
+        로그아웃 성공 시 쿠키에 저장된 내용들을 삭제
+        """
         response = Response(
                 {
                     'MESSAGE': 'SIGN_OUT_SUCCESS',
