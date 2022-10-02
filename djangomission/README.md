@@ -58,7 +58,11 @@
 
 `pip3 install -r requirements.txt`
 
-4. 서버를 구동합니다.
+4. DB 스키마 동기화를 위해 migration을 진행합니다.
+
+`pytohn manage.py migrate`
+
+5. 서버를 구동합니다.
 
 `python manage.py runserver 0:8000`
 
@@ -79,6 +83,9 @@
   * 질문 리스트 조회
 * 답변 생성, 조회, 수정, 삭제
   * 답변 리스트 조회
+
+# API 명세서
+[Postman Document](https://documenter.getpostman.com/view/18212355/2s83tGmWVN)
 
 # 구현 실패 회고
 
