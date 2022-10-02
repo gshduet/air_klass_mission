@@ -903,5 +903,4 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm+all,macos,windows,jetbrains+all,linux,django,virtualenv
 
-my_settings.py
 .python-version
