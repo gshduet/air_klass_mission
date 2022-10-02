@@ -1,8 +1,9 @@
 from django.urls import path
 
-from .views import SetMasterView, KlassCreateView
+from .views import MasterView, KlassView, KlassDetailView
 
 urlpatterns = [
-    path('/setmaster', SetMasterView.as_view()),
-    path('/klass', KlassCreateView.as_view())
+    path('/setmaster', MasterView.as_view()),
+    path('/klass', KlassView.as_view()),
+    path('/klass/<int:id>', KlassDetailView.as_view())
 ]

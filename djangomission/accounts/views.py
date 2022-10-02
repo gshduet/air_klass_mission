@@ -1,3 +1,4 @@
+from django.contrib.auth import login, logout
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
@@ -5,6 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .serializers import SignUpSerializer, SignInSerializer
+from .models import User
 
 
 class SignUpView(APIView):
@@ -36,10 +38,23 @@ class SignInView(APIView):
                 }, status=status.HTTP_200_OK)
 
             response.set_cookie('user', serializer.validated_data['user'])
-            response.set_cookie('access_token', serializer.validated_data['access_token'])
-            response.set_cookie('refresh_token', serializer.validated_data['refresh_token'])
+            response.set_cookie(
+                'access_token', serializer.validated_data['access_token'])
+            response.set_cookie(
+                'refresh_token', serializer.validated_data['refresh_token'])
 
             return response
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request: Request) -> Response:
+        response = Response(
+                {
+                    'MESSAGE': 'SIGN_OUT_SUCCESS',
+                }, status=status.HTTP_202_ACCEPTED)
         
+        response.delete_cookie('user')
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+
+        return response
