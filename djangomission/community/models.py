@@ -11,14 +11,11 @@ class Question(TimeStampModel):
     contents = models.TextField(verbose_name='질문내용')
     is_answered = models.BooleanField(default=False, verbose_name='답변 여부')
     is_deleted = models.BooleanField(default=False, verbose_name='질문 삭제여부')
-    deleted_at = models.DateTimeField(auto_now=True, verbose_name='질문 삭제시각')
+    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name='질문 삭제시각')
 
     class Meta:
         db_table = 'question'
         ordering = ['-created_at']
-
-    def __str__(self):
-        return f'{self.klass}-{self.student}'
 
 
 class Answer(TimeStampModel):
@@ -26,11 +23,8 @@ class Answer(TimeStampModel):
         'Question', on_delete=models.CASCADE, verbose_name='답변이 달릴 강의')
     contents = models.TextField(verbose_name='답변내용')
     is_deleted = models.BooleanField(default=False, verbose_name='질문 삭제여부')
-    deleted_at = models.DateTimeField(auto_now=True, verbose_name='질문 삭제시각')
+    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name='질문 삭제시각')
 
     class Meta:
         db_table = 'answer'
         ordering = ['-created_at']
-
-    def __str__(self):
-        return f'{self.klass}-{self.question}'
