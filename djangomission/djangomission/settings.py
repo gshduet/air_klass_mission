@@ -57,7 +57,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -139,20 +139,17 @@ STATIC_URL = '/static/'
 APPEND_SLASH = False
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        ),
 }
 
 REST_USE_JWT = True
 
 SIMPLE_JWT = {
-    # ACCESS_TOKEN 유효기간
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),
-    # REFRESH_TOKEN 유효기간
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    # REFRESH_TOKEN 발급 시 ACCESS_TOKEN 동시 재발급 여부
     'ROTATE_REFRESH_TOKENS': False,
-    # REFRESH_TOKEN 재발급 시 기존 REFRESH_TOKEN 블랙리스트 등록
     'BLACKLIST_AFTER_ROTATION': True,
-    # 토큰 발급할 USER 모델 연결
-    'TOKEN_USER_CLASS': 'users.User',
 }

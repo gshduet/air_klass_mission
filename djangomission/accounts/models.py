@@ -45,18 +45,12 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin, TimeStampModel):
-    """
-    기존에 설정되어 있언 AbstractUser는 
-    id / password / last_login / is_superuser / username / first_name / last_name / email / is_staff / is_active / date_joined
-    등 경우에 따라 필요치 않은 컬럼들이 다수 포함되어 있어 
-    id / password / last_login를 기본으로 하는 AbstractBaseUser로 변경하여 상속
-    """
     SOCIAL_LOGIN_CHOICES = [
         ('DIRECT_SIGN_UP', 'direct'),
         ('KAKAO', 'kakao'),
         ('FACEBOOK', 'facebook'),
         ('APPLE', 'apple')
-    ]  # 외부 API를 통해 가입한 사용자 구분을 위한 리스트
+    ]
 
     user_type = models.CharField(
         max_length=20, choices=SOCIAL_LOGIN_CHOICES, default=SOCIAL_LOGIN_CHOICES[0])
@@ -84,4 +78,4 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampModel):
         db_table = 'user'
 
     def __str__(self):
-        return f'{self.email}-{self.username}'
+        return self.email
