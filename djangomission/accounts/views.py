@@ -1,21 +1,17 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .serializers import SignUpSerializer, SignInSerializer
 
 
 class SignUpView(APIView):
-    """
-    회원가입 API
-    email, password, username 항목을 입력받은 후
-    email 유효성 검사, 중복여부 검사를 진행 해 해당 사항 없으면 회원가입 후 201 status code 반환
-    """
     permissions_classes = [AllowAny]
     serializer_class = SignUpSerializer
 
-    def post(self, request) -> Response:
+    def post(self, request: Request) -> Response:
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
@@ -27,18 +23,10 @@ class SignUpView(APIView):
 
 
 class SignInView(APIView):
-    """
-    로그인 API
-    email과 password 항목을 입력받은 후 DB에 존재하는 정보와 일치할 경우
-    해당 유저에 대한 정보를 토대로 refresh_token과 access_token을 발급
-    클라이언트에게 전달하여 클라이언트의 쿠키 혹은 로컬스토리지 등에 보관
-    우선은 로컬스토리지에 저장하며 
-    로그인 후 보내는 요청마다 header에 access_token을 담아 같이 전송한다고 가정
-    """
     permissions_classes = [AllowAny]
     serializer_class = SignInSerializer
 
-    def post(self, request):
+    def post(self, request: Request) -> Response:
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=True):

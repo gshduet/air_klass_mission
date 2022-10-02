@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import Master
@@ -10,7 +11,7 @@ from accounts.models import User
 class SetMasterView(APIView):
     serializer_class = SetMasterSerializer
 
-    def post(self, request):
+    def post(self, request: Request) -> Response:
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
@@ -29,7 +30,7 @@ class SetMasterView(APIView):
 
         return Response({'MESSAGE': 'SET_MASTER_SUCCESS'}, status=status.HTTP_201_CREATED)
 
-    def delete(self, request):
+    def delete(self, request: Request) -> Response:
         master = User.objects.get(email=request.COOKIES['user'])
 
         if not master.is_master:
@@ -43,4 +44,6 @@ class SetMasterView(APIView):
 
 
 class KlassView(APIView):
-    ...
+    
+    def post(self, request: Request) -> Response:
+        ...

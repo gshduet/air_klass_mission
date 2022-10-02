@@ -2,9 +2,6 @@ from rest_framework import permissions
 
 
 class IsMasterOrReadOnly(permissions.BasePermission):
-    """
-        인증받은 사용자 본인의 정보가 아닐 경우 권한 제한
-    """
 
     def has_permission(self, request, view):
         if request.user.is_authenticated and request.COOKIES.get('access_token'):

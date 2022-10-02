@@ -12,3 +12,4 @@ class SetMasterSerializer(serializers.ModelSerializer):
             'master_name',
             'description'
         )
+
