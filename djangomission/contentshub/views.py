@@ -4,15 +4,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from .models import Master, Klass
-from .serializers import SetMasterSerializer, KlassCreateSerializer
+from .serializers import SetMasterSerializer, KlassCreateSerializer, KlassRetriveSerializer
 from accounts.models import User
 
 
-class SetMasterView(APIView):
-    serializer_class = SetMasterSerializer
+class MasterView(APIView):
 
     def post(self, request: Request) -> Response:
-        serializer = self.serializer_class(data=request.data)
+        serializer = SetMasterSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
             user = User.objects.get(email=request.COOKIES['user'])
@@ -43,11 +42,10 @@ class SetMasterView(APIView):
         return Response({'MESSAGE': 'UNSET_MASTER_SUCCESS'}, status=status.HTTP_204_NO_CONTENT)
 
 
-class KlassCreateView(APIView):
+class KlassView(APIView):
     queryset = Klass.objects.all()
-    serializer_class = KlassCreateSerializer
 
-    def post(self, request):
+    def post(self, request: Request) -> Response:
         serializer = KlassCreateSerializer(data=request.data)
         user = User.objects.get(email=request.COOKIES['user'])
 
@@ -64,3 +62,34 @@ class KlassCreateView(APIView):
             return Response({'MESSAGE': 'SUCCESS'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, reqeust: Request) -> Response:
+        klass = Klass.objects.all()
+        serializer = KlassRetriveSerializer(klass, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class KlassDetailView(APIView):
+
+    def get(self, request: Request, id: int) -> Response:
+        try:
+            klass = Klass.objects.get(id=id)
+            serializer = KlassRetriveSerializer(klass)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Klass.DoesNotExist:
+            return Response({'MESSAGE': 'KLASS_DOES_NOT_EXISTS'}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request: Request, id: int) -> Response:
+        klass = Klass.objects.get(id=id)
+        serializer = KlassRetriveSerializer(
+            klass, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        

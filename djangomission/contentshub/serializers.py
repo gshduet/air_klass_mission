@@ -8,17 +8,19 @@ class SetMasterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Master
-        fields = (
-            'master_name',
-            'description'
-        )
+        fields = ['master_name','description']
 
 
 class KlassCreateSerializer(serializers.ModelSerializer):
-    master = serializers.ReadOnlyField(source='user.email')
 
     class Meta:
         model = Klass
-        fields = ['master', 'title', 'description'] 
+        fields = ['title', 'description'] 
 
 
+class KlassRetriveSerializer(serializers.ModelSerializer):
+    master_name = serializers.ReadOnlyField(source='master.master_name')
+
+    class Meta:
+        model = Klass
+        fields = ['master','master_name', 'title', 'description']
