@@ -110,27 +110,28 @@ class QuestionDetailView(APIView):
         is_answered 플래그를 바탕으로 질문이 되었는지를 확인하며
         만약 is_answered가 True일 경우 삭제할 수 없음
         """
-        question = Question.objects.select_related('klass').get(id=question_id)
+        question = Question.objects.select_related('klass__master').get(id=question_id)
         user = User.objects.get(email=request.COOKIES['user'])
+
+        print(question.klass.master)
+        print(user.master)
 
         if user != question.student:
             return Response({'MESSAGE': 'UNAUTHORIZED_USER'}, status=status.HTTP_403_FORBIDDEN)
 
-        elif question.klass.master == user.master:
-            pass
-
-        try:
-            if question.is_answered == False:
-                question.is_deleted = True
-                question.deleted_at = datetime.now()
-                question.save()
-
-                return Response({'MESSAGE': 'DELETE_SUSSECED'}, status=status.HTTP_204_NO_CONTENT)
-
-            else:
-                return Response({'MESSAGE': 'CAN_NOT_DELETE.ANSWER_ALREADY_WRITTEN'}, status=status.HTTP_204_NO_CONTENT)
-
-        except Question.DoesNotExist:
-            return Response({'MESSAGE': 'QUESTION_DOES_NOT_EXISTS'}, status=status.HTTP_404_NOT_FOUND)
-
+        if question.klass.master == user.master or question.student == user:
+            try:
+                if question.is_answered == False:
+                    question.is_deleted = True
+                    question.deleted_at = datetime.now()
+                    question.save()
+    
+                    return Response({'MESSAGE': 'DELETE_SUSSECED'}, status=status.HTTP_204_NO_CONTENT)
+    
+                else:
+                    return Response({'MESSAGE': 'CAN_NOT_DELETE.ANSWER_ALREADY_WRITTEN'}, status=status.HTTP_204_NO_CONTENT)
+    
+            except Question.DoesNotExist:
+                return Response({'MESSAGE': 'QUESTION_DOES_NOT_EXISTS'}, status=status.HTTP_404_NOT_FOUND)
+    
 
