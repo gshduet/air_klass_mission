@@ -1,10 +1,11 @@
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import Master
-from .serializers import SetMasterSerializer
+from .models import Master, Klass
+from .serializers import SetMasterSerializer, KlassCreateSerializer
 from accounts.models import User
 
 
@@ -43,7 +44,19 @@ class SetMasterView(APIView):
         return Response({'MESSAGE': 'UNSET_MASTER_SUCCESS'}, status=status.HTTP_204_NO_CONTENT)
 
 
-class KlassView(APIView):
-    
-    def post(self, request: Request) -> Response:
-        ...
+class KlassCreateView(generics.CreateAPIView):
+    queryset = Klass.objects.all()
+    serializer_class = KlassCreateSerializer
+    # permission_classes = [IsMasterUser]
+
+    def post(self, request):
+        serializer = KlassCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            Klass.objects.create(
+                master = request.user.master,
+                title = request.data['title'],
+                description = request.data['description'],
+            )
+        
+            return Response({'MESSAGE': 'SUCCESS'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
